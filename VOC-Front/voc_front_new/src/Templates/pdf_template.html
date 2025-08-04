@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="/app/templates/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="/app/templates/css/custom.css">
+    <style>
+        body { background: #f7f9fa; font-family: 'Segoe UI', Arial, sans-serif; }
+        .report-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px #0001;
+            padding: 24px 32px 16px 32px;
+            margin-bottom: 32px;
+        }
+        .report-header img {
+            height: 60px;
+        }
+        .report-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #256ec2;
+            letter-spacing: 2px;
+            text-align: right;
+        }
+        .section-title {
+            background: linear-gradient(90deg, #256ec2 80%, #1e3a8a 100%);
+            color: #fff;
+            font-weight: 600;
+            padding: 8px 18px;
+            border-radius: 6px 6px 0 0;
+            margin-bottom: 0;
+            font-size: 1.1rem;
+        }
+        .section-content {
+            background: #fff;
+            border-radius: 0 0 8px 8px;
+            padding: 18px 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 4px #0001;
+        }
+        .footer {
+            background: #256ec2;
+            color: #fff;
+            padding: 18px 0 8px 0;
+            border-radius: 0 0 12px 12px;
+            text-align: center;
+            font-size: 1rem;
+            margin-top: 40px;
+        }
+        .footer img {
+            height: 32px;
+            margin: 0 8px;
+            vertical-align: middle;
+        }
+        .info-table th, .info-table td {
+            padding: 6px 10px;
+            font-size: 0.98rem;
+        }
+        .checkbox-button__label {
+            font-size: 0.95rem;
+        }
+        .cvss {
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+        .crlf { white-space: pre-line; }
+    </style>
+</head>
+
+<body>
+    <div class="report-header">
+        <img src="/src/Templates/images/tudigisec.svg" alt="TUDIGISEC by Nomios" />
+        <div class="report-title">VULNERABILITY REPORT</div>
+    </div>
+    <div>
+        {% for report_item in data.report_items %}
+        <div class="section-title">Confidentiality, Distribution, Severity</div>
+        <div class="section-content">
+            <table class="info-table" style="width: 100%">
+                <tr>
+                    <td class="w25 py-0"><b>Confidentiality</b></td>
+                <td class="w15 py-0">
+                        <label class="checkbox-button">
+                            <input type="checkbox" class="checkbox-button__input" id="low" name="low" {% if report_item.attrs.confidentiality=='UNRESTRICTED' %}checked{% endif %}>
+                            <span class="checkbox-button__control"></span>
+                            <span class="checkbox-button__label">Unrestricted</span>
+                        </label>
+                </td>
+                <td class="w15 py-0">
+                        <label class="checkbox-button">
+                            <input type="checkbox" class="checkbox-button__input" id="middle" name="middle" {% if report_item.attrs.confidentiality=='CLASSIFIED' %}checked{% endif %}>
+                            <span class="checkbox-button__control"></span>
+                            <span class="checkbox-button__label">Classified</span>
+                        </label>
+                </td>
+                <td class="w15 py-0">
+                        <label class="checkbox-button">
+                            <input type="checkbox" class="checkbox-button__input" id="high" name="high" {% if report_item.attrs.confidentiality=='CONFIDENTIAL' %}checked{% endif %}>
+                            <span class="checkbox-button__control"></span>
+                            <span class="checkbox-button__label">Confidential</span>
+                        </label>
+                </td>
+                <td class="w15 py-0">
+                        <label class="checkbox-button">
+                            <input type="checkbox" class="checkbox-button__input" id="critical" name="critical" {% if report_item.attrs.confidentiality=='SECRET' %}checked{% endif %}>
+                            <span class="checkbox-button__control"></span>
+                            <span class="checkbox-button__label">Secret</span>
+                        </label>
+                </td>
+                <td class="w15 py-0">
+                        <label class="checkbox-button">
+                            <input type="checkbox" class="checkbox-button__input" id="critical" name="critical" {% if report_item.attrs.confidentiality=='TOP SECRET' %}checked{% endif %}>
+                            <span class="checkbox-button__control"></span>
+                            <span class="checkbox-button__label">Top Secret</span>
+                        </label>
+                </td>
+            </tr>
+            <tr>
+                    <td class="w25 py-0"><b>TLP</b></td>
+                <td class="mt-2" colspan="5">
+                    {% if report_item.attrs.tlp == 'CLEAR' or report_item.attrs.tlp == 'WHITE' %}
+                        <span style="padding: 4px; background-color: black !important; color:white; font-weight: 700">TLP:CLEAR</span>
+                    {% endif %}
+                    {% if report_item.attrs.tlp == 'GREEN' %}
+                        <span style="padding: 4px; background-color: black !important; color:#33ff00; font-weight: 700">TLP:GREEN</span>
+                    {% endif %}
+                    {% if report_item.attrs.tlp == 'AMBER' %}
+                        <span style="padding: 4px; background-color: black !important; color:#ffc000; font-weight: 700">TLP:AMBER</span>
+                    {% endif %}
+                    {% if report_item.attrs.tlp == 'AMBER+STRICT' %}
+                        <span style="padding: 4px; background-color: black !important; color:#ffc000; font-weight: 700">TLP:AMBER+STRICT</span>
+                    {% endif %}
+                    {% if report_item.attrs.tlp == 'RED' %}
+                        <span style="padding: 4px; background-color: black !important; color:#ff2b2b; font-weight: 700">TLP:RED</span>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                    <td class="w25 py-0"><b>CVSS vector</b></td>
+                <td class="py-0" colspan="5">
+                        <span class="cvss">{{ report_item.attrs.cvss.vectorString|e }} </span>
+                </td>
+            </tr>
+        </table>
+        </div>
+        <div class="section-title">Description</div>
+        <div class="section-content">{{ report_item.attrs.description|e }}</div>
+        <div class="section-title">Published</div>
+        <div class="section-content">{{ report_item.attrs.exposure_date }}</div>
+        <div class="section-title">Updated</div>
+        <div class="section-content">{{ report_item.attrs.update_date }}</div>
+        <div class="section-title">CVE</div>
+        <div class="section-content">
+                    {% if report_item.attrs.cve %}
+                    {% for i in report_item.attrs.cve %}
+                    <div>{{ i|e }}</div>
+                    {% endfor %}
+                    {% endif %}
+        </div>
+        <div class="section-title">Impact</div>
+        <div class="section-content">
+                    {% if report_item.attrs.impact %}
+                    {% for i in report_item.attrs.impact %}
+                    <div>{{ i|e }}</div>
+                    {% endfor %}
+                    {% endif %}
+        </div>
+        <div class="section-title">IOC</div>
+        <div class="section-content">
+                    {% if report_item.attrs.ioc %}
+                    {% for i in report_item.attrs.ioc %}
+                    <div>{{ i|e }}</div>
+                    {% endfor %}
+                    {% endif %}
+        </div>
+        <div class="section-title">Affected Systems</div>
+        <div class="section-content">{{ report_item.attrs.affected_systems }}</div>
+        <div class="section-title">Recommendations</div>
+        <div class="section-content">{{ report_item.attrs.recommendations }}</div>
+        <div class="section-title">Links</div>
+        <div class="section-content">
+                        {% if report_item.attrs.links %}
+                        {% for i in report_item.attrs.links %}
+                        <div>{{ i|e }}</div>
+                        {% endfor %}
+                        {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    <div class="footer">
+        <img src="/src/Templates/images/tds.png" alt="TUDIGISEC by Nomios" />
+        <span style="font-weight:700; font-size:1.1rem; margin-left:8px;">TUDIGISEC by Nomios</span>
+    </div>
+</body>
+
+</html>

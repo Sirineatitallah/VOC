@@ -1,0 +1,25 @@
+// Centralisation des imports d'icônes pour éviter les problèmes de chargement
+export {
+  ShieldAlert,
+  BarChart2,
+  Radio,
+  Layers,
+  Settings,
+  HelpCircle,
+  Activity,
+  AlertTriangle,
+  Clock,
+  Calendar,
+  Link,
+  Server,
+  Tag,
+  Eye,
+  ExternalLink,
+  Filter,
+  Download,
+  RefreshCw,
+  Loader,
+  ChevronLeft,
+  ChevronRight,
+  ShieldCheck
+} from 'lucide-react';
