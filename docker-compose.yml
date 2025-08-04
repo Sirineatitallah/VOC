@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+  voc-frontend-dev:
+    build:
+      context: ./voc_front_new/VOC-FRONT
+      dockerfile: Dockerfile
+      target: development
+    container_name: voc-frontend-dev
+    ports:
+      - "5173:5173"
+    volumes:
+      - "./voc_front_new/VOC-FRONT:/app"
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+    networks:
+      - voc-network
+    profiles:
+      - dev
+
+  voc-frontend-prod:
+    build:
+      context: ./voc_front_new/VOC-FRONT
+      dockerfile: Dockerfile
+      target: production
+    container_name: voc-frontend-prod
+    ports:
+      - "80:80"
+    networks:
+      - voc-network
+    profiles:
+      - prod
+
+  voc-backend:
+    build:
+      context: ./voc_front_new/VOC-FRONT
+      dockerfile: Dockerfile
+      target: development
+    container_name: voc-backend
+    ports:
+      - "5174:5174"
+    volumes:
+      - "./voc_front_new/VOC-FRONT:/app"
+      - /app/node_modules
+    command: node server.cjs
+    environment:
+      - NODE_ENV=development
+    networks:
+      - voc-network
+    profiles:
+      - dev
+      - backend
+
+  taranis-gateway:
+    build:
+      context: ./taranis_gateway
+      dockerfile: Dockerfile
+    container_name: taranis-gateway
+    ports:
+      - "5001:5001"
+    environment:
+      - PYTHONUNBUFFERED=1
+    networks:
+      - voc-network
+    depends_on:
+      - voc-backend
+
+networks:
+  voc-network:
+    driver: bridge
+
+volumes:
+  node_modules:
